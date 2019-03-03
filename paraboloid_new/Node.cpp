@@ -33,6 +33,11 @@ void Node::set_nodes(double * params, int * s, double * h)
 {
 	/*деление многомерного параллелепипеда(кирпича) на меньшие кирпичи
 	и вычислеие координат узловых точек*/
+	double params_copy[6]{ params[0], params[1], params[2], params[3], params[4], params[5] };
+	if (this->nodes != nullptr)
+		for (int i = 0; i < this->rows; i++)
+			delete[] this->nodes[i];
+	params = params_copy;
 	double * l = new double[this->get_columns()];
 	double * hh = new double[this->get_columns()];
 	for (int i = 0; i < this->get_columns(); i++)

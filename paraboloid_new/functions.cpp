@@ -5,8 +5,9 @@
 
 using namespace std;
 
-void aff_center(double ** data, double * arr, int filesize)
+double * affine_center(double ** data, int filesize)
 {
+	double * arr = new double[3];
 	for (int k(0); k < filesize; k++)
 	{
 		arr[0] += data[k][0];
@@ -16,24 +17,23 @@ void aff_center(double ** data, double * arr, int filesize)
 	arr[0] /= filesize;
 	arr[1] /= filesize;
 	arr[2] /= filesize;
+	return arr;
 }
 
 
 double target_func(double ** data, double * a, int data_size)
 {
 	double result = 0;
-	double tmp;
 	for (int i = 0; i < data_size; i++)
-		result += paraboloid(a, data[i]);
+		result += parab(a, data[i]);
 	return result; 
 }
 
 
-double paraboloid(double * a, double * data)
+double parab(double * a, double * data)
 {
-	double tmp_dir = DIR(a, V(a), TT(a, V(a)), data);
-	double tmp = (rho(a, data) - tmp_dir*tmp_dir);
-	return tmp*tmp;
+	return pow(rho(a, data) -
+		pow(v1(a)*(data[0] - (a[0] - 2 * a[5] * v1(a))) + v2(a)*(data[1] - (a[1] - 2 * a[5] * v2(a))) + v3(a)*(data[2] - (a[2] - 2 * a[5] * v3(a))), 2), 2);
 }
 
 
@@ -68,7 +68,10 @@ double * TT(double * a, double * v)
 
 double DIR(double * a, double * v, double * tt, double * data)
 {
-	return v[0]*(data[0]-tt[0]) + v[1]*(data[1]-tt[1]) + v[2]*(data[2]-tt[2]);
+	static double tmp = v[0] * (data[0] - tt[0]) + v[1] * (data[1] - tt[1]) + v[2] * (data[2] - tt[2]);
+	delete[] v;
+	delete[] tt;
+	return tmp;
 }
 
 
@@ -91,7 +94,7 @@ int counter(int * m)
 		m[5] * (m[0] + 1)*(m[1] + 1) * (m[2] + 1) * (m[3] + 1) * (m[4] + 1);
 }
 
-double find_f0(double ** e)
+double def_f0(double ** e)
 {
 	double ax, ay, az;
 	ax = (e[0][1] - e[0][0]) / 2;
@@ -175,6 +178,7 @@ double * minimize(Net & net, Node & node)
 			min_func_val_num = i;
 		}
 	}
+	delete[] func_val;
 	return node.get_nodes()[min_func_val_num];
 }
 
@@ -191,8 +195,13 @@ double * minimize_main(Net & net, Node & node, Settings & settings, double * h, 
 	return params;
 }
 
-void output_result(double * params)
+void output_result(double * params, Net & net)
 {
+	cout << "ÐÅÇÓËÜÒÀÒ ÌÈÍÈÌÈÇÀÖÈÈ\n";
+	cout << params[0] << '\t' << params[1] << '\t' << params[2] <<
+		'\t' << params[3] << '\t' << params[4] << '\t' << params[5] << '\n';
+	cout << "ÌÈÍÈÌÀËÜÍÎÅ ÇÍÀ×ÅÍÈÅ ÔÓÍÊÖÈÈ\n";
+	cout << target_func(net.get_net(), params, net.get_net_size()) << endl;
 	cout << "ÔÎÊÓÑ\n" << params[0] << '\t' << params[1] << '\t' << params[2] << '\n';
 	double * v = V(params);
 	double * ver = Ver(params, v);
@@ -200,6 +209,9 @@ void output_result(double * params)
 	cout << "ÍÀÏÐÀÂËßÞÙÈÉ ÂÅÊÒÎÐ ÎÑÈ\n" << v[0] << '\t' << v[1] << '\t' << v[2] << '\n';
 	cout << "ÂÅÐØÈÍÀ\n" << ver[0] << '\t' << ver[1] << '\t' << ver[2] << '\n';
 	cout << "ÒÎ×ÊÀ, ×ÅÐÅÇ ÊÎÒÎÐÓÞ ÏÐÎÕÎÄÈÒ ÄÈÐÅÊÒÎÐÈÀËÜÍÀß ÏËÎÑÊÎÑÒÜ\n" << tt[0] << '\t' << tt[1] << '\t' << tt[2] << '\n';
+	delete[] v;
+	delete[] ver;
+	delete[] tt;
 }
 
 

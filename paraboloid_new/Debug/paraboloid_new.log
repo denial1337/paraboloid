@@ -1,2 +1,8 @@
-﻿  paraboloid_new.vcxproj -> C:\Users\Admin\documents\visual studio 2015\Projects\paraboloid_new\Debug\paraboloid_new.exe
-  paraboloid_new.vcxproj -> C:\Users\Admin\documents\visual studio 2015\Projects\paraboloid_new\Debug\paraboloid_new.pdb (Partial PDB)
+﻿  main.cpp
+  functions.cpp
+  Generating Code...
+  Compiling...
+  test.cpp
+  Generating Code...
+  paraboloid_new.vcxproj -> C:\Users\Admin\Documents\GitHub\paraboloid\Debug\paraboloid_new.exe
+  paraboloid_new.vcxproj -> C:\Users\Admin\Documents\GitHub\paraboloid\Debug\paraboloid_new.pdb (Partial PDB)
